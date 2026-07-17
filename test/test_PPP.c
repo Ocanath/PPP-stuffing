@@ -293,7 +293,31 @@ void test_PPP_stream_multiple_strays(void)
 }
 
 
+void test_PPP_stream_overrun(void)
+{
+	
+	unsigned char unstuffed_mem[8] = {};
+	unsigned char streaming_mem[8*2+2] = {};
+	ppp_buffer_t unstuffed_buffer = {.buf = unstuffed_mem, .length = 0, .size = sizeof(unstuffed_mem)};
+	ppp_buffer_t streaming_buffer = {.buf = streaming_mem, .length = 0, .size = sizeof(streaming_mem)};
+	
+	int num_captured_frames = 0;
+	for(size_t i = 0; i < 256; i++)
+	{
+		unsigned char byte = (unsigned char)i;
+		if(i == 128)
+		{
+			byte = FRAME_CHAR;
+		}
+		size_t nb = parse_PPP_stream(byte, &unstuffed_buffer, &streaming_buffer);
+		if(nb != 0)
+		{
+			num_captured_frames++;
+		}
+	}
+	TEST_ASSERT_EQUAL(1, num_captured_frames);
 
+}
 
 // Test 4: PPP stream parsing
 void test_PPP_stream_parsing(void)

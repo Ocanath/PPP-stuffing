@@ -56,7 +56,7 @@ size_t PPP_stuff(ppp_buffer_t * unstuffed_buffer, ppp_buffer_t * stuffed_buffer)
 	}
 
 	size_t bidx = 0;
-	for(int i = 0; i < unstuffed_buffer->length; i++)
+	for(size_t i = 0; i < unstuffed_buffer->length; i++)
 	{
 		uint8_t b = unstuffed_buffer->buf[i];
 		if( (b == FRAME_CHAR) || (b == ESC_CHAR) )
@@ -255,6 +255,7 @@ size_t parse_PPP_stream(uint8_t new_byte, ppp_buffer_t * unstuffed_buffer, ppp_b
 
 	if(input->length >= input->size)
 	{
+		input->length = 0;
 		return 0;	//overrun
 	}
 	input->buf[input->length++] = new_byte;
